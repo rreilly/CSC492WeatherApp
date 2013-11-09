@@ -1,0 +1,9 @@
+WeatherBug GEO Basic
+
+Key: 4truz7c6ffcn5drvjyr4va7x
+
+
+WeatherBug REST XML
+
+Key: ud28nxu36cn6hxg84xgc6t6d
+
