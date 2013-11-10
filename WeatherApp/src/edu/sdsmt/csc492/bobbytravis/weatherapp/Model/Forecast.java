@@ -1,4 +1,4 @@
-package edu.sdsmt.csc492.bobbytravis.weatherapp.Model;
+package edu.sdsmt.csc492.bobbytravis.weatherapp.model;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import android.os.Parcelable;
 import android.text.format.DateUtils;
 import android.util.JsonReader;
 import android.util.Log;
-import edu.sdsmt.cs492.assignment3.weatherapp.IListeners;
+import edu.sdsmt.csc492.bobbytravis.weatherapp.IListeners;
 
 public class Forecast implements Parcelable
 {

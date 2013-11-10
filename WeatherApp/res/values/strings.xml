@@ -4,5 +4,22 @@
     <string name="app_name">Weather App</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    
+    
+   <string name="labelTemp">Temperature:&#160;</string>
+   <string name="labelFeelsLikeTemp">Feels Like:&#160;</string>
+   <string name="labelHumidity">Humidity:&#160;</string>
+   <string name="labelChanceOfPrecip">Chance of Precipitation:&#160;</string>
+   <string name="labelAsOfTime">As Of:&#160;</string>
+   
+   <string name="pendingWebCall">pending</string>
+   
+   <string name="progressMessage">Loading Current Forecast</string>
+
+   <string name="toastNullData">Data could not be read from web service.</string>
+   
+   <string-array name="cityArray">
+        <item>57701|Rapid City</item>
+    </string-array>
 
 </resources>

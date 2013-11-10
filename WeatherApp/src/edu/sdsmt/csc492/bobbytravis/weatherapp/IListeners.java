@@ -1,7 +1,7 @@
 package edu.sdsmt.csc492.bobbytravis.weatherapp;
 
-import edu.sdsmt.cs492.assignment3.weatherapp.model.Forecast;
-import edu.sdsmt.cs492.assignment3.weatherapp.model.ForecastLocation;
+import edu.sdsmt.csc492.bobbytravis.weatherapp.model.Forecast;
+import edu.sdsmt.csc492.bobbytravis.weatherapp.model.ForecastLocation;
 
 public interface IListeners
 {

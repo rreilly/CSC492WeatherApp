@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import edu.sdsmt.cs492.assignment3.weatherapp.R;
+import edu.sdsmt.csc492.bobbytravis.weatherapp.R;
 
 public class FragmentForecast extends Fragment
 {
