@@ -1,11 +1,19 @@
-package edu.sdsmt.csc492.bobbytravis.weatherapp.model;
+package edu.sdsmt.csc492.bobbytravis.weatherapp.Model;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -28,6 +36,8 @@ public class Forecast implements Parcelable
         private String _URL = "http://i.wxbug.net/REST/Direct/GetForecastHourly.ashx?zip=" + "%s" +
          "&ht=t&ht=i&ht=cp&ht=fl&ht=h" +
          "&api_key=q3wj56tqghv7ybd8dy6gg4e7";
+        
+        private static final String zipCode = "57701";
         
         // http://developer.weatherbug.com/docs/read/List_of_Icons
                 
@@ -95,7 +105,26 @@ public class Forecast implements Parcelable
                                 //                 URL
                                 // InputStreamReader
                                 // JsonReader
-
+                        		
+                        		StringBuilder stringBuilder = new StringBuilder();
+                        		HttpClient client = new DefaultHttpClient();
+                        		
+                        		HttpResponse response = client.execute(new HttpGet(String.format(_URL, zipCode)));
+                        		if( response.getStatusLine().getStatusCode() == 200)
+                        		{
+                        			HttpEntity entity = response.getEntity();
+                        			InputStream content = entity.getContent();
+                        			BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+                        			
+                        			String line;
+                        			while((line = reader.readLine()) != null)
+                        			{
+                        				stringBuilder.append(line);
+                        			}
+                        			// Need to implement this method
+                        			//forecastLocation = readJSON(stringBuilder.toString());
+                        		}
+                        		
                         }
                         catch (IllegalStateException e)
                         {

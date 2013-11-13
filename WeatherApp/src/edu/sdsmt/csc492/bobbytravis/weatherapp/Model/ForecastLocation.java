@@ -1,4 +1,4 @@
-package edu.sdsmt.csc492.bobbytravis.weatherapp.model;
+package edu.sdsmt.csc492.bobbytravis.weatherapp.Model;
 
 public class ForecastLocation
 {
@@ -18,6 +18,8 @@ public class ForecastLocation
                 State = null;
                 Country = null;
         }
+        
+     
 
         public String ZipCode;
         public String City;
