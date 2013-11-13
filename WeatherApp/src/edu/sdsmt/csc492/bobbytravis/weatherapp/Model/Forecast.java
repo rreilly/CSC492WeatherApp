@@ -44,6 +44,11 @@ public class Forecast implements Parcelable
         private String _imageURL = "http://img.weather.weatherbug.com/forecast/icons/localized/500x420/en/trans/%s.png";
         
         public Bitmap Image;
+        public String Temp;
+        public String FeelsLikeTemp;
+        public String Humidity;
+        public String ChanceOfPrecip;
+        public String AsOfTime;
         
         public Forecast()
         {
@@ -123,6 +128,7 @@ public class Forecast implements Parcelable
                         			}
                         			// Need to implement this method
                         			//forecastLocation = readJSON(stringBuilder.toString());
+                        			
                         		}
                         		
                         }
