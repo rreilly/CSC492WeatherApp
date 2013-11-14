@@ -6,15 +6,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,6 +21,8 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.JsonReader;
+import android.util.JsonToken;
 import android.util.Log;
 import edu.sdsmt.csc492.bobbytravis.weatherapp.IListeners;
 
@@ -103,7 +104,7 @@ public class Forecast implements Parcelable
         	new LoadForecast().execute(zipCode);
         }
 
-        public static class LoadForecast extends AsyncTask<String, Void, JSONObject>
+        public static class LoadForecast extends AsyncTask<String, Void, Void>
         {
                 private IListeners _listener;
                 private Context _context;
@@ -116,9 +117,10 @@ public class Forecast implements Parcelable
                         _listener = listener;
                 }*/
 
-                protected JSONObject doInBackground(String... params)
+                protected Void doInBackground(String... params)
                 {
-                        Forecast forecast = null;
+                        //Forecast forecast = null;
+                        //char quote = '"';
 
                         try
                         {
@@ -129,6 +131,7 @@ public class Forecast implements Parcelable
                         		
                         		StringBuilder stringBuilder = new StringBuilder();
                         		HttpClient client = new DefaultHttpClient();
+                        		JsonToken type = null;
                         		
                         		HttpResponse response = client.execute(new HttpGet(String.format(_URL, zipCode)));
                         		if( response.getStatusLine().getStatusCode() == 200)
@@ -137,7 +140,49 @@ public class Forecast implements Parcelable
                         			InputStream content = entity.getContent();
                         			BufferedReader reader = new BufferedReader(new InputStreamReader(content));
                         			
-                        			String line;
+                        			try
+                        			{
+                        				JsonReader jreader = new JsonReader(new InputStreamReader(content, "UTF-8"));
+                        				List<String> message = new ArrayList<String>();
+                        				
+                        				jreader.beginObject();
+                        				//while loop to go through json object
+                        	            while (jreader.hasNext()) {
+                        	            	type = jreader.peek();
+                        	            	switch(type){
+                        	            	case STRING:
+                        	            		message.add(jreader.nextString());
+                        	            		break;
+                        	            	case NAME:
+                        	            		message.add(jreader.nextName());
+                        	            		break;
+                        	            	case NUMBER:
+                        	            		long number = jreader.nextLong();
+                        	            		message.add(String.valueOf(number));
+                        	            		break;
+                        	            	case BEGIN_ARRAY:
+                        	            		jreader.beginArray();
+                        	            		break;
+                        	            	case END_ARRAY:
+                        	            		jreader.endArray();
+                        	            		break;
+                        	            	case BEGIN_OBJECT:
+                        	            		jreader.beginObject();
+                        	            		break;
+                        	            	case END_OBJECT:
+                        	            		jreader.endObject();
+                        	            		break;
+                        	            	}
+                        	            }
+                        	            jreader.endObject();
+                        			}
+                        			catch( IOException e)
+                        			{
+                        				
+                        			}
+                        			
+                        			//old style, need to see if JsonReader will work better
+                        			/*String line;
                         			while((line = reader.readLine()) != null)
                         			{
                         				stringBuilder.append(line);
@@ -145,9 +190,9 @@ public class Forecast implements Parcelable
                         			// Need to implement this method
                         			//forecastLocation = readJSON(stringBuilder.toString());
                         			JSONTokener tokener = new JSONTokener(stringBuilder.toString());
-                        			JSONObject result = new JSONObject(tokener);
+                        			line = tokener.nextString(quote);
                         			
-                        			return result;
+                        			int a = 1;*/
                         		}
                         		
                         }
