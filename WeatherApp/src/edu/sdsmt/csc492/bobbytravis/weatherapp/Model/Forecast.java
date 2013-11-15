@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -44,11 +45,11 @@ public class Forecast implements Parcelable
         private static String _imageURL = "http://img.weather.weatherbug.com/forecast/icons/localized/500x420/en/trans/%s.png";
         
         public Bitmap Image;
-        public String Temp;
-        public String FeelsLikeTemp;
-        public String Humidity;
-        public String ChanceOfPrecip;
-        public String AsOfTime;
+        public static String Temp;
+        public static String FeelsLikeTemp;
+        public static String Humidity;
+        public static String ChanceOfPrecip;
+        public static String AsOfTime;
         
         private static Forecast _instance;
         
@@ -104,7 +105,7 @@ public class Forecast implements Parcelable
         	new LoadForecast().execute(zipCode);
         }
 
-        public static class LoadForecast extends AsyncTask<String, Void, Void>
+        public static class LoadForecast extends AsyncTask<String, Void, List<String>>
         {
                 private IListeners _listener;
                 private Context _context;
@@ -117,7 +118,7 @@ public class Forecast implements Parcelable
                         _listener = listener;
                 }*/
 
-                protected Void doInBackground(String... params)
+                protected List<String> doInBackground(String... params)
                 {
                         //Forecast forecast = null;
                         //char quote = '"';
@@ -172,11 +173,17 @@ public class Forecast implements Parcelable
                         	            	case END_OBJECT:
                         	            		jreader.endObject();
                         	            		break;
+                        	            	case NULL:
+                        	            		jreader.skipValue();
+                        	            		break;
                         	            	}
                         	            }
                         	            jreader.endObject();
+                        	            jreader.close();
+                        	            
+                        	            return message;                        	            
                         			}
-                        			catch( IOException e)
+                        			catch( Exception e)
                         			{
                         				
                         			}
@@ -208,10 +215,26 @@ public class Forecast implements Parcelable
                        return null;
                 }
 
-                /*protected void onPostExecute(JSONArray result)
+                protected void onPostExecute(List<String> result)
                 {
-                        return result;
-                }*/
+                	Iterator<String> iterator;
+                	
+                    //load values to forecast variables
+                	iterator = result.listIterator(result.indexOf("temperature"));
+                    Temp = iterator.next();
+                        	            
+                    iterator = result.listIterator(result.indexOf("feelsLike"));
+                    FeelsLikeTemp = iterator.next();
+                        	            
+                    iterator = result.listIterator(result.indexOf("humidity"));
+                    Humidity = iterator.next();
+                        	            
+                    iterator = result.listIterator(result.indexOf("chancePrecip"));
+                    ChanceOfPrecip = iterator.next();
+                        	            
+                    iterator = result.listIterator(result.indexOf("dateTime"));
+                    AsOfTime = iterator.next();
+                }
 
                 private Bitmap readIconBitmap(String conditionString, int bitmapSampleSize)
                 {

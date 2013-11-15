@@ -32,6 +32,9 @@ public class MainActivity extends Activity implements IListeners
                 // be used for adding/replacing fragments.
                 _fragmentManager = getFragmentManager();
                 
+                //MOVED THIS TO WITHIN showForecast
+                //CAN USE THE ON CREATE METHOD TO PASS BUNDLE
+                /*
                 // If the fragment is not found, create it.
                 _fragmentForecast = (FragmentForecast) _fragmentManager.findFragmentByTag(FRAGMENT_FORECAST_TAG);
                 {
@@ -46,21 +49,22 @@ public class MainActivity extends Activity implements IListeners
                         _fragmentManager.beginTransaction()
                          .replace(R.id.fragmentContainerFrame, _fragmentForecast, FRAGMENT_FORECAST_TAG)
                          .commit();
-                }
+                }*/
 
                 _forecast = Forecast.getInstance();
                 
                 // By default, first element is "favorite" city, go get location.
                 // TextUtils.split() takes a regular expression and in the case
                 // of a pipe delimiter, it needs to be escaped.
-                showForecast(TextUtils.split(_citiesArray[0], "\\|")[0]);
+                showForecast(savedInstanceState);
                 
                 
         }
 
-        private void showForecast(String zipCode)
+        private void showForecast(Bundle savedInstanceState)
         {
         		_forecast.getForecast();
+        		Bundle bundle = new Bundle();
                 // HINT: Use bundle to pass arguments to fragment.
                 //
                 //                Bundle bundle = new Bundle();
@@ -68,10 +72,28 @@ public class MainActivity extends Activity implements IListeners
                 //                ForecastFragment.setArguments(bundle);
                 
                 // HINT: FragmentManager().beginTransaction()
-                Bundle bundle = new Bundle();
-                bundle.putString("ZipCode", zipCode);
+        		bundle.putString("Temp", _forecast.Temp);
+        		bundle.putString("FeelsLikeTemp", _forecast.FeelsLikeTemp);
+        		bundle.putString("Humidity", _forecast.Humidity);
+        		bundle.putString("ChanceOfPrecip", _forecast.ChanceOfPrecip);
+        		bundle.putString("AsOfTime", _forecast.AsOfTime);
+                
+                // If the fragment is not found, create it.
+                _fragmentForecast = (FragmentForecast) _fragmentManager.findFragmentByTag(FRAGMENT_FORECAST_TAG);
+                {
+                        _fragmentForecast = new FragmentForecast();
+                }
                 _fragmentForecast.setArguments(bundle);
                 
+                // Only add/replace the list fragment if the bundle is empty; otherwise,
+                // the activity is being re-created so keep the fragment that is already
+                // displayed.
+                if (savedInstanceState == null)
+                {
+                        _fragmentManager.beginTransaction()
+                         .replace(R.id.fragmentContainerFrame, _fragmentForecast, FRAGMENT_FORECAST_TAG)
+                         .commit();
+                }
                 
         }
 
