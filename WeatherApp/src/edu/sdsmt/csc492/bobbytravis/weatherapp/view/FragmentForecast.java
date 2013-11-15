@@ -7,8 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import edu.sdsmt.csc492.bobbytravis.weatherapp.R;
+import edu.sdsmt.csc492.bobbytravis.weatherapp.IListeners;
+import edu.sdsmt.csc492.bobbytravis.weatherapp.Model.Forecast;
+import edu.sdsmt.csc492.bobbytravis.weatherapp.Model.ForecastLocation;
 
-public class FragmentForecast extends Fragment
+public class FragmentForecast extends Fragment implements IListeners
 {
         public static final String LOCATION_KEY = "key_location";
         public static final String FORECAST_KEY = "key_forecast";
@@ -45,11 +48,11 @@ public class FragmentForecast extends Fragment
                 _textViewAsOfTime = (TextView) rootView.findViewById(R.id.textViewAsOfTime);
                 
                 // set values
-                _textViewTemp.setText(savedInstanceState.getString("Temp"));
+                /*_textViewTemp.setText(savedInstanceState.getString("Temp"));
                 _textViewFeelsLikeTemp.setText(savedInstanceState.getString("FeelsLikeTemp"));
                 _textViewHumidity.setText(savedInstanceState.getString("Humidity"));
                 _textViewChanceOfPrecip.setText(savedInstanceState.getString("ChanceOfPrecip"));
-                _textViewAsOfTime.setText(savedInstanceState.getString("AsOfTime"));
+                _textViewAsOfTime.setText(savedInstanceState.getString("AsOfTime"));*/
                 
                 return rootView;
         }
@@ -65,5 +68,19 @@ public class FragmentForecast extends Fragment
         {
                 
                 super.onDestroy();
+        }
+        
+        public void onLocationLoaded(ForecastLocation forecastLocation)
+        {
+        	
+        }
+        
+        public void onForecastLoaded(Forecast forecast)
+        {
+        	_textViewTemp.setText(forecast.Temp);
+            _textViewFeelsLikeTemp.setText(forecast.FeelsLikeTemp);
+            _textViewHumidity.setText(forecast.Humidity);
+            _textViewChanceOfPrecip.setText(forecast.ChanceOfPrecip);
+            _textViewAsOfTime.setText(forecast.AsOfTime);
         }
 }

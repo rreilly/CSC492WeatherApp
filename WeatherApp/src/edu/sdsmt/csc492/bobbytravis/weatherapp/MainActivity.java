@@ -1,16 +1,13 @@
 package edu.sdsmt.csc492.bobbytravis.weatherapp;
 
-import org.json.JSONArray;
-
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.os.Bundle;
-import android.text.TextUtils;
 import edu.sdsmt.csc492.bobbytravis.weatherapp.Model.Forecast;
 import edu.sdsmt.csc492.bobbytravis.weatherapp.Model.ForecastLocation;
 import edu.sdsmt.csc492.bobbytravis.weatherapp.view.FragmentForecast;
 
-public class MainActivity extends Activity implements IListeners
+public class MainActivity extends Activity
 {
 		private final static String FRAGMENT_FORECAST_TAG = "ForecastTag";
 	
@@ -63,7 +60,7 @@ public class MainActivity extends Activity implements IListeners
 
         private void showForecast(Bundle savedInstanceState)
         {
-        		_forecast.getForecast();
+        		_forecast.getForecast(_fragmentForecast);
         		Bundle bundle = new Bundle();
                 // HINT: Use bundle to pass arguments to fragment.
                 //
@@ -72,11 +69,11 @@ public class MainActivity extends Activity implements IListeners
                 //                ForecastFragment.setArguments(bundle);
                 
                 // HINT: FragmentManager().beginTransaction()
-        		bundle.putString("Temp", _forecast.Temp);
+        		/*bundle.putString("Temp", _forecast.Temp);
         		bundle.putString("FeelsLikeTemp", _forecast.FeelsLikeTemp);
         		bundle.putString("Humidity", _forecast.Humidity);
         		bundle.putString("ChanceOfPrecip", _forecast.ChanceOfPrecip);
-        		bundle.putString("AsOfTime", _forecast.AsOfTime);
+        		bundle.putString("AsOfTime", _forecast.AsOfTime);*/
                 
                 // If the fragment is not found, create it.
                 _fragmentForecast = (FragmentForecast) _fragmentManager.findFragmentByTag(FRAGMENT_FORECAST_TAG);
@@ -96,17 +93,4 @@ public class MainActivity extends Activity implements IListeners
                 }
                 
         }
-
-		@Override
-		public void onLocationLoaded(ForecastLocation forecastLocation) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void onForecastLoaded(Forecast forecast) {
-			// TODO Auto-generated method stub
-			
-		}
-
 }

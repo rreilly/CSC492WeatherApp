@@ -16,6 +16,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -56,6 +57,7 @@ public class Forecast implements Parcelable
         public Forecast()
         {
                 Image = null;
+                _instance = this;
         }
         
         public static synchronized Forecast getInstance()
@@ -100,23 +102,23 @@ public class Forecast implements Parcelable
                 }
         };
         
-        public void getForecast()
+        public void getForecast(Fragment viewFragment)
         {
-        	new LoadForecast().execute(zipCode);
+        	new LoadForecast( this, (IListeners) viewFragment).execute(zipCode);
         }
 
         public static class LoadForecast extends AsyncTask<String, Void, List<String>>
         {
                 private IListeners _listener;
-                private Context _context;
+                //private Context _context;
 
                 private int bitmapSampleSize = -1;
 
-                /*public LoadForecast(Context context, IListeners listener)
+                public LoadForecast(Forecast forecast, IListeners listener)
                 {
-                        _context = context;
+                        //_context = forecast;
                         _listener = listener;
-                }*/
+                }
 
                 protected List<String> doInBackground(String... params)
                 {
@@ -221,19 +223,21 @@ public class Forecast implements Parcelable
                 	
                     //load values to forecast variables
                 	iterator = result.listIterator(result.indexOf("temperature"));
-                    Temp = iterator.next();
+                    _instance.Temp = iterator.next();
                         	            
                     iterator = result.listIterator(result.indexOf("feelsLike"));
-                    FeelsLikeTemp = iterator.next();
+                    _instance.FeelsLikeTemp = iterator.next();
                         	            
                     iterator = result.listIterator(result.indexOf("humidity"));
-                    Humidity = iterator.next();
+                    _instance.Humidity = iterator.next();
                         	            
                     iterator = result.listIterator(result.indexOf("chancePrecip"));
-                    ChanceOfPrecip = iterator.next();
+                    _instance.ChanceOfPrecip = iterator.next();
                         	            
                     iterator = result.listIterator(result.indexOf("dateTime"));
-                    AsOfTime = iterator.next();
+                    _instance.AsOfTime = iterator.next();
+                    
+                    _listener.onForecastLoaded(_instance);
                 }
 
                 private Bitmap readIconBitmap(String conditionString, int bitmapSampleSize)
