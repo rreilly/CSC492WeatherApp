@@ -60,7 +60,6 @@ public class MainActivity extends Activity
 
         private void showForecast(Bundle savedInstanceState)
         {
-        		_forecast.getForecast(_fragmentForecast);
         		Bundle bundle = new Bundle();
                 // HINT: Use bundle to pass arguments to fragment.
                 //
@@ -91,6 +90,7 @@ public class MainActivity extends Activity
                          .replace(R.id.fragmentContainerFrame, _fragmentForecast, FRAGMENT_FORECAST_TAG)
                          .commit();
                 }
+        		_forecast.getForecast(_fragmentForecast);
                 
         }
 }

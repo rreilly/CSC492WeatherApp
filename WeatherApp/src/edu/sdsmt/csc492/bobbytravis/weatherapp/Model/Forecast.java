@@ -26,6 +26,7 @@ import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
+import android.widget.Toast;
 import edu.sdsmt.csc492.bobbytravis.weatherapp.IListeners;
 
 public class Forecast implements Parcelable
@@ -46,11 +47,11 @@ public class Forecast implements Parcelable
         private static String _imageURL = "http://img.weather.weatherbug.com/forecast/icons/localized/500x420/en/trans/%s.png";
         
         public Bitmap Image;
-        public static String Temp;
-        public static String FeelsLikeTemp;
-        public static String Humidity;
-        public static String ChanceOfPrecip;
-        public static String AsOfTime;
+        public String Temp;
+        public String FeelsLikeTemp;
+        public String Humidity;
+        public String ChanceOfPrecip;
+        public String AsOfTime;
         
         private static Forecast _instance;
         
@@ -109,8 +110,8 @@ public class Forecast implements Parcelable
 
         public static class LoadForecast extends AsyncTask<String, Void, List<String>>
         {
-                private IListeners _listener;
-                //private Context _context;
+                private static IListeners _listener;
+                private Context _context;
 
                 private int bitmapSampleSize = -1;
 
@@ -136,7 +137,7 @@ public class Forecast implements Parcelable
                         		HttpClient client = new DefaultHttpClient();
                         		JsonToken type = null;
                         		
-                        		HttpResponse response = client.execute(new HttpGet(String.format(_URL, zipCode)));
+                        		HttpResponse response = client.execute(new HttpGet(String.format(_URL, params[0])));
                         		if( response.getStatusLine().getStatusCode() == 200)
                         		{
                         			HttpEntity entity = response.getEntity();
@@ -187,7 +188,7 @@ public class Forecast implements Parcelable
                         			}
                         			catch( Exception e)
                         			{
-                        				
+
                         			}
                         			
                         			//old style, need to see if JsonReader will work better
@@ -208,20 +209,25 @@ public class Forecast implements Parcelable
                         catch (IllegalStateException e)
                         {
                                 Log.e(TAG, e.toString() + params[0]);
+                				Toast toast = Toast.makeText(_context, "Unable to contact network", Toast.LENGTH_LONG);
+                				toast.show();
                         }
                         catch (Exception e)
                         {
                                 Log.e(TAG, e.toString());
+                				Toast toast = Toast.makeText(_context, "Unable to contact network", Toast.LENGTH_LONG);
+                				toast.show();
                         }
-
-                       return null;
+                       
+                        Log.e("Error", "Returning null");
+                        return null;
                 }
 
                 protected void onPostExecute(List<String> result)
                 {
                 	Iterator<String> iterator;
                 	
-                    //load values to forecast variables
+                    //load values to forecast variables 
                 	iterator = result.listIterator(result.indexOf("temperature"));
                     _instance.Temp = iterator.next();
                         	            
