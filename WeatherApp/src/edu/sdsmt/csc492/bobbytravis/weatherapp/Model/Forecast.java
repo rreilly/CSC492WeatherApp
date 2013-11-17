@@ -96,6 +96,12 @@ public class Forecast implements Parcelable
         private Forecast(Parcel parcel)
         {
                 Image = parcel.readParcelable(Bitmap.class.getClassLoader());
+                Temp = parcel.readString();
+                AsOfTime = parcel.readString();
+                ChanceOfPrecip = parcel.readString();
+                FeelsLikeTemp = parcel.readString();
+                Humidity = parcel.readString();
+                Icon = parcel.readString();
         }
 
         @Override
@@ -108,6 +114,12 @@ public class Forecast implements Parcelable
         public void writeToParcel(Parcel dest, int flags)
         {
                 dest.writeParcelable(Image, 0);
+                dest.writeString(Temp);
+                dest.writeString(AsOfTime);
+                dest.writeString(ChanceOfPrecip);
+                dest.writeString(FeelsLikeTemp);
+                dest.writeString(Humidity);
+                dest.writeString(Icon);
         }
         
         

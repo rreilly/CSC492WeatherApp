@@ -47,6 +47,12 @@ public class ForecastLocation implements Parcelable
 
         }
         
+        private ForecastLocation(Parcel parcel)
+        {
+        	City = parcel.readString();
+        	State = parcel.readString();
+        }
+        
         public static synchronized ForecastLocation getInstance()
         {
         	if (_instance == null)
@@ -57,9 +63,45 @@ public class ForecastLocation implements Parcelable
         	return _instance;
         }
         
+		@Override
+		public int describeContents() 
+		{
+			return 0;
+		}
+
+		@Override
+		public void writeToParcel(Parcel dest, int flags) 
+		{
+			dest.writeString(City);
+			dest.writeString(State);
+		}
+		
+		public static final Parcelable.Creator<ForecastLocation> CREATOR = new Parcelable.Creator<ForecastLocation>()
+		{
+			public ForecastLocation createFromParcel(Parcel pc)
+			{
+				return new ForecastLocation(pc);
+			}
+			
+			public ForecastLocation[] newArray(int size)
+			{
+				return new ForecastLocation[size];
+			}
+		};
+        
         public void getForecastLocation(Fragment viewFragment)
         {
         	new LoadForecastLocation( this, (IListeners) viewFragment).execute(ZipCode);
+        }
+        
+        public String getCity()
+        {
+        	return City;
+        }
+        
+        public String getState()
+        {
+        	return State;
         }
         
         public static class LoadForecastLocation extends AsyncTask<String, Void, List<String>>
@@ -187,18 +229,4 @@ public class ForecastLocation implements Parcelable
                     _listener.onLocationLoaded(_instance);
                 }
         }
-
-		@Override
-		public int describeContents() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public void writeToParcel(Parcel dest, int flags) {
-			// TODO Auto-generated method stub
-			
-		}
-
-
 }

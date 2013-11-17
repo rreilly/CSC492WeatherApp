@@ -7,7 +7,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import android.app.Fragment;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +25,9 @@ public class FragmentForecast extends Fragment implements IListeners
         public static final String LOCATION_KEY = "key_location";
         public static final String FORECAST_KEY = "key_forecast";
         
+        private Forecast _forecast;
+        private ForecastLocation _location;
+        
         private TextView _textViewLocation;
         private TextView _textViewTempLabel;
         private TextView _textViewTemp;
@@ -42,16 +44,23 @@ public class FragmentForecast extends Fragment implements IListeners
         private ImageView _imageView;
         
         @Override
-        public void onCreate(Bundle argumentsBundle)
+        public void onCreate(Bundle savedInstanceState)
         {
-                super.onCreate(argumentsBundle);
+                super.onCreate(savedInstanceState);
                 
+                if(savedInstanceState != null)
+                {
+                	_forecast = savedInstanceState.getParcelable(FORECAST_KEY);
+                	_location = savedInstanceState.getParcelable(LOCATION_KEY);
+                }
         }
 
         @Override
         public void onSaveInstanceState(Bundle savedInstanceStateBundle)
         {
                 super.onSaveInstanceState(savedInstanceStateBundle);
+                savedInstanceStateBundle.putParcelable(FORECAST_KEY, _forecast);
+                savedInstanceStateBundle.putParcelable(LOCATION_KEY, _location);
         }
 
         @Override
@@ -89,13 +98,6 @@ public class FragmentForecast extends Fragment implements IListeners
                 _textViewChanceOfPrecipLabel.setVisibility(4);
                 _textViewAsOfTimeLabel.setVisibility(4);
                 
-                // set values
-                /*_textViewTemp.setText(savedInstanceState.getString("Temp"));
-                _textViewFeelsLikeTemp.setText(savedInstanceState.getString("FeelsLikeTemp"));
-                _textViewHumidity.setText(savedInstanceState.getString("Humidity"));
-                _textViewChanceOfPrecip.setText(savedInstanceState.getString("ChanceOfPrecip"));
-                _textViewAsOfTime.setText(savedInstanceState.getString("AsOfTime"));*/
-                
                 return rootView;
         }
 
@@ -115,13 +117,14 @@ public class FragmentForecast extends Fragment implements IListeners
         @Override
         public void onLocationLoaded(ForecastLocation forecastLocation)
         {
-        	/*if(forecastLocation == null)
+        	_location = forecastLocation;
+        	if(forecastLocation == null)
         	{
         		Toast.makeText(getActivity(), "Unable to retrieve location", Toast.LENGTH_SHORT).show();
         		return;        		
-        	}*/
+        	}
         	
-        	_textViewLocation.setText(forecastLocation.City + " " + forecastLocation.State);
+        	_textViewLocation.setText(forecastLocation.getCity() + " " + forecastLocation.getState());
         	
         	_textViewLocation.setVisibility(0);
         }
@@ -129,6 +132,7 @@ public class FragmentForecast extends Fragment implements IListeners
         @Override
         public void onForecastLoaded(Forecast forecast)
         {
+        	_forecast = forecast;
         	if(forecast == null)
         	{
         		Toast.makeText(getActivity(), "Unable to retrieve forecast", Toast.LENGTH_SHORT).show();
@@ -145,10 +149,10 @@ public class FragmentForecast extends Fragment implements IListeners
         	}
         	
             // Fill the text fields
-        	_textViewTemp.setText(forecast.Temp);
-            _textViewFeelsLikeTemp.setText(forecast.FeelsLikeTemp);
-            _textViewHumidity.setText(forecast.Humidity);
-            _textViewChanceOfPrecip.setText(forecast.ChanceOfPrecip);
+        	_textViewTemp.setText(forecast.Temp + "F");
+            _textViewFeelsLikeTemp.setText(forecast.FeelsLikeTemp + "F");
+            _textViewHumidity.setText(forecast.Humidity + "%");
+            _textViewChanceOfPrecip.setText(forecast.ChanceOfPrecip + "%");
             _textViewAsOfTime.setText(formatDateTime(forecast.AsOfTime));
             
         	// Hide the progress bar
