@@ -1,10 +1,18 @@
 package edu.sdsmt.csc492.bobbytravis.weatherapp.view;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import android.app.Fragment;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +39,7 @@ public class FragmentForecast extends Fragment implements IListeners
         private TextView _textViewAsOfTime;
         private ProgressBar _progressBar;
         private TextView _textViewProgressBar;
+        private ImageView _imageView;
         
         @Override
         public void onCreate(Bundle argumentsBundle)
@@ -64,6 +73,7 @@ public class FragmentForecast extends Fragment implements IListeners
                 _textViewAsOfTime = (TextView) rootView.findViewById(R.id.textViewAsOfTime);
                 _progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
                 _textViewProgressBar = (TextView) rootView.findViewById(R.id.textViewProgressBar);
+                _imageView = (ImageView) rootView.findViewById(R.id.imageForecast);
                 
                 // Hide the display initially
                 _textViewLocation.setVisibility(4);
@@ -102,11 +112,12 @@ public class FragmentForecast extends Fragment implements IListeners
                 super.onDestroy();
         }
         
+        @Override
         public void onLocationLoaded(ForecastLocation forecastLocation)
         {
         	if(forecastLocation == null)
         	{
-        		Toast.makeText(getActivity(), "Unable to contact server", Toast.LENGTH_SHORT).show();
+        		Toast.makeText(getActivity(), "Unable to retrieve location", Toast.LENGTH_SHORT).show();
         		return;        		
         	}
         	
@@ -115,12 +126,22 @@ public class FragmentForecast extends Fragment implements IListeners
         	_textViewLocation.setVisibility(0);
         }
         
+        @Override
         public void onForecastLoaded(Forecast forecast)
         {
         	if(forecast == null)
         	{
-        		Toast.makeText(getActivity(), "Unable to contact server", Toast.LENGTH_SHORT).show();
+        		Toast.makeText(getActivity(), "Unable to retrieve forecast", Toast.LENGTH_SHORT).show();
         		return; 
+        	}
+        	
+        	if(forecast.getImage() == null)
+        	{
+        		Toast.makeText(getActivity(), "Unable to load icon", Toast.LENGTH_SHORT).show();
+        	}
+        	else // Display icon bitmap
+        	{
+        		_imageView.setImageBitmap(forecast.getImage());
         	}
         	
             // Fill the text fields
@@ -128,7 +149,7 @@ public class FragmentForecast extends Fragment implements IListeners
             _textViewFeelsLikeTemp.setText(forecast.FeelsLikeTemp);
             _textViewHumidity.setText(forecast.Humidity);
             _textViewChanceOfPrecip.setText(forecast.ChanceOfPrecip);
-            _textViewAsOfTime.setText(forecast.AsOfTime);
+            _textViewAsOfTime.setText(formatDateTime(forecast.AsOfTime));
             
         	// Hide the progress bar
         	_progressBar.setVisibility(4);
@@ -146,6 +167,15 @@ public class FragmentForecast extends Fragment implements IListeners
             _textViewHumidityLabel.setVisibility(0);
             _textViewChanceOfPrecipLabel.setVisibility(0);
             _textViewAsOfTimeLabel.setVisibility(0);
-                       
+            
         }
+        
+        // Function courtesy of Andrew Thompson, make sure to give credit when we document this up
+		public String formatDateTime(String timestamp)
+		{
+		    Date date = new Date(Long.valueOf(timestamp));   
+		    DateFormat dateFormat = new SimpleDateFormat("EEE MMM d, h:mm a", Locale.US);
+		    dateFormat.setTimeZone(TimeZone.getTimeZone("gmt"));
+		    return dateFormat.format(date);
+		}
 }

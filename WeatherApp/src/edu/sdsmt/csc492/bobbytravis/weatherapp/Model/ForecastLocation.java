@@ -112,8 +112,7 @@ public class ForecastLocation implements Parcelable
                         	            		message.add(jreader.nextName());
                         	            		break;
                         	            	case NUMBER:
-                        	            		long number = jreader.nextLong();
-                        	            		message.add(String.valueOf(number));
+                        	            		message.add(String.valueOf(jreader.nextLong()));
                         	            		break;
                         	            	case BEGIN_ARRAY:
                         	            		jreader.beginArray();
@@ -126,11 +125,6 @@ public class ForecastLocation implements Parcelable
                         	            		break;
                         	            	case END_OBJECT:
                         	            		jreader.endObject();
-                        	            		break;
-                        	            	case NULL:
-                        	            		jreader.skipValue();
-                        	            		break;
-                        	            	case END_DOCUMENT:
                         	            		break;
                         	            	default:
                         	            		jreader.skipValue();
@@ -180,16 +174,16 @@ public class ForecastLocation implements Parcelable
                 {	
                 	if( result == null )
                 	{
-                		_listener.onForecastLoaded(null);
+                		_listener.onLocationLoaded(null);
                 		return;
                 	}
                 	Iterator<String> iterator;
                 	
                     //load values to forecast variables 
-                	iterator = result.listIterator(result.indexOf("city"));
+                	iterator = result.listIterator(result.indexOf("city")+1);
                     _instance.City = iterator.next();
                         	            
-                    iterator = result.listIterator(result.indexOf("state"));
+                    iterator = result.listIterator(result.indexOf("state")+1);
                     _instance.State = iterator.next();
                         	         
                     

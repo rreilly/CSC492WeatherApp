@@ -47,12 +47,13 @@ public class Forecast implements Parcelable
                 
         private static String _imageURL = "http://img.weather.weatherbug.com/forecast/icons/localized/500x420/en/trans/%s.png";
         
-        public Bitmap Image;
+        public static Bitmap Image;
         public String Temp;
         public String FeelsLikeTemp;
         public String Humidity;
         public String ChanceOfPrecip;
         public String AsOfTime;
+        public String Icon;
         
         private static Forecast _instance;
         
@@ -62,6 +63,21 @@ public class Forecast implements Parcelable
                 _instance = this;
         }
         
+        public static final Parcelable.Creator<Forecast> Creator = new Parcelable.Creator<Forecast>()
+        {
+                @Override
+                public Forecast createFromParcel(Parcel pc)
+                {
+                        return new Forecast(pc);
+                }
+                
+                @Override
+                public Forecast[] newArray(int size)
+                {
+                        return new Forecast[size];
+                }
+        };
+        
         public static synchronized Forecast getInstance()
         {
         	if (_instance == null)
@@ -70,6 +86,11 @@ public class Forecast implements Parcelable
         	}
         	
         	return _instance;
+        }
+        
+        public Bitmap getImage()
+        {
+        	return Image;
         }
 
         private Forecast(Parcel parcel)
@@ -89,20 +110,7 @@ public class Forecast implements Parcelable
                 dest.writeParcelable(Image, 0);
         }
         
-        public static final Parcelable.Creator<Forecast> Creator = new Parcelable.Creator<Forecast>()
-        {
-                @Override
-                public Forecast createFromParcel(Parcel pc)
-                {
-                        return new Forecast(pc);
-                }
-                
-                @Override
-                public Forecast[] newArray(int size)
-                {
-                        return new Forecast[size];
-                }
-        };
+        
         
         public void getForecast(Fragment viewFragment)
         {
@@ -159,8 +167,7 @@ public class Forecast implements Parcelable
                         	            		message.add(jreader.nextName());
                         	            		break;
                         	            	case NUMBER:
-                        	            		long number = jreader.nextLong();
-                        	            		message.add(String.valueOf(number));
+                        	            		message.add(String.valueOf(jreader.nextLong()));
                         	            		break;
                         	            	case BEGIN_ARRAY:
                         	            		jreader.beginArray();
@@ -174,17 +181,15 @@ public class Forecast implements Parcelable
                         	            	case END_OBJECT:
                         	            		jreader.endObject();
                         	            		break;
-                        	            	case NULL:
-                        	            		jreader.skipValue();
-                        	            		break;
-                        	            	case END_DOCUMENT:
-                        	            		break;
 											default:
+												jreader.skipValue();
 												break;
                         	            	}
                         	            }
                         	            jreader.endObject();
                         	            jreader.close();
+                        	            
+                        	            Image = readIconBitmap(message.listIterator(message.indexOf("icon")+1).next(),1);
                         	            
                         	            return message;                        	            
                         			}
@@ -268,17 +273,21 @@ public class Forecast implements Parcelable
                         catch (MalformedURLException e)
                         {
                                 Log.e(TAG, e.toString());
+                                return null;
                         }
                         catch (IOException e)
                         {
                                 Log.e(TAG, e.toString());
+                                return null;
                         }
                         catch (Exception e)
                         {
                                 Log.e(TAG, e.toString());
+                                return null;
                         }
 
                         return iconBitmap;
                 }
+                
         }
 }
