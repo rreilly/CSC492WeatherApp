@@ -121,8 +121,6 @@ public class Forecast implements Parcelable
         {
                 private static IListeners _listener;
 
-                private int bitmapSampleSize = -1;
-
                 public LoadForecast(Forecast forecast, IListeners listener)
                 {
                         //_context = forecast;

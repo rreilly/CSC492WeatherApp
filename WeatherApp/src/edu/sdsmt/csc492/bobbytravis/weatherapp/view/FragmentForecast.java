@@ -115,11 +115,11 @@ public class FragmentForecast extends Fragment implements IListeners
         @Override
         public void onLocationLoaded(ForecastLocation forecastLocation)
         {
-        	if(forecastLocation == null)
+        	/*if(forecastLocation == null)
         	{
         		Toast.makeText(getActivity(), "Unable to retrieve location", Toast.LENGTH_SHORT).show();
         		return;        		
-        	}
+        	}*/
         	
         	_textViewLocation.setText(forecastLocation.City + " " + forecastLocation.State);
         	

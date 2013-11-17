@@ -31,20 +31,20 @@ public class ForecastLocation implements Parcelable
         private static ForecastLocation _instance;
         
         private static final String ZipCode = "57701";
-        public String City;
-        public String State;
-        public String Country;        
+        public static String City;
+        public static String State;
+        
         // http://developer.weatherbug.com/docs/read/WeatherBug_API_JSON
         // NOTE: See example JSON in doc folder.
-        private static final String _URL = "http://i.wxbug.net/REST/Direct/GetLocation.ashx?zip=" + "%s" +
-                         "&api_key=ud28nxu36cn6hxg84xgc6t6d";
+        private static final String _URL = "http://i.wxbug.net/REST/Direct/GetData.ashx?zip=" + "%s" +
+                         "&dt=l&api_key=ud28nxu36cn6hxg84xgc6t6d";
         
 
         public ForecastLocation()
         {
                 City = null;
                 State = null;
-                Country = null;
+
         }
         
         public static synchronized ForecastLocation getInstance()
@@ -88,31 +88,29 @@ public class ForecastLocation implements Parcelable
                         		
                         		HttpClient client = new DefaultHttpClient();
                         		JsonToken type = null;
-                        		
                         		HttpResponse response = client.execute(new HttpGet(String.format(_URL, params[0])));
                         		if( response.getStatusLine().getStatusCode() == 200)
                         		{
                         			HttpEntity entity = response.getEntity();
                         			InputStream content = entity.getContent();
-                        			
+
                         			try
                         			{
                         				JsonReader jreader = new JsonReader(new InputStreamReader(content, "UTF-8"));
                         				List<String> message = new ArrayList<String>();
-                        				
+                            			
                         				jreader.beginObject();
                         				//while loop to go through json object
-                        	            while (jreader.hasNext()) {
+                        	            while (jreader.hasNext()) 
+                        	            {
                         	            	type = jreader.peek();
-                        	            	switch(type){
+                        	            	switch(type)
+                        	            	{
                         	            	case STRING:
                         	            		message.add(jreader.nextString());
                         	            		break;
                         	            	case NAME:
                         	            		message.add(jreader.nextName());
-                        	            		break;
-                        	            	case NUMBER:
-                        	            		message.add(String.valueOf(jreader.nextLong()));
                         	            		break;
                         	            	case BEGIN_ARRAY:
                         	            		jreader.beginArray();
@@ -126,14 +124,14 @@ public class ForecastLocation implements Parcelable
                         	            	case END_OBJECT:
                         	            		jreader.endObject();
                         	            		break;
-                        	            	default:
-                        	            		jreader.skipValue();
-                        	            		break;
+											default:
+												jreader.skipValue();
+												break;
                         	            	}
                         	            }
                         	            jreader.endObject();
                         	            jreader.close();
-                        	            
+                        	            Log.e("Test", "got here");
                         	            return message;                        	            
                         			}
                         			catch( Exception e)
@@ -148,7 +146,6 @@ public class ForecastLocation implements Parcelable
                         				stringBuilder.append(line);
                         			}
                         			// Need to implement this method
-                        			//forecastLocation = readJSON(stringBuilder.toString());
                         			JSONTokener tokener = new JSONTokener(stringBuilder.toString());
                         			line = tokener.nextString(quote);
                         			
@@ -177,15 +174,15 @@ public class ForecastLocation implements Parcelable
                 		_listener.onLocationLoaded(null);
                 		return;
                 	}
+                	
                 	Iterator<String> iterator;
                 	
                     //load values to forecast variables 
                 	iterator = result.listIterator(result.indexOf("city")+1);
                     _instance.City = iterator.next();
-                        	            
+                    
                     iterator = result.listIterator(result.indexOf("state")+1);
                     _instance.State = iterator.next();
-                        	         
                     
                     _listener.onLocationLoaded(_instance);
                 }
