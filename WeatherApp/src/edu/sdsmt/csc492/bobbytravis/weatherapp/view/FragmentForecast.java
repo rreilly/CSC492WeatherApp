@@ -52,9 +52,9 @@ public class FragmentForecast extends Fragment implements IListeners
                 {
                 	_forecast = savedInstanceState.getParcelable(FORECAST_KEY);
                 	_location = savedInstanceState.getParcelable(LOCATION_KEY);
-                	if(_location == null)
+                	if(!_location.isLoaded)
                 		_location.getForecastLocation(this);
-                	if(_forecast == null)
+                	if(!_forecast.isLoaded)
                 		_forecast.getForecast(this);
                 	
                 }
@@ -135,7 +135,8 @@ public class FragmentForecast extends Fragment implements IListeners
                 	// Hide the progress bar
                 	_progressBar.setVisibility(4);
                 	_textViewProgressBar.setVisibility(4);
-                	
+
+                
                 	// Show the other stuff
                     _textViewTemp.setVisibility(0);
                     _textViewFeelsLikeTemp.setVisibility(0);
@@ -164,6 +165,7 @@ public class FragmentForecast extends Fragment implements IListeners
         {
                 
                 super.onDestroy();
+                
         }
         
         @Override
@@ -175,7 +177,7 @@ public class FragmentForecast extends Fragment implements IListeners
         		Toast.makeText(getActivity(), "Unable to retrieve location", Toast.LENGTH_SHORT).show();
         		return;        		
         	}
-        	
+
         	_textViewLocation.setText(forecastLocation.getCity() + " " + forecastLocation.getState());
         	
         	_textViewLocation.setVisibility(0);

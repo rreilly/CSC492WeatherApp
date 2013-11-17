@@ -33,7 +33,7 @@ public class ForecastLocation implements Parcelable
         private static final String ZipCode = "57701";
         public static String City;
         public static String State;
-        
+        public static Boolean isLoaded = false;
         // http://developer.weatherbug.com/docs/read/WeatherBug_API_JSON
         // NOTE: See example JSON in doc folder.
         private static final String _URL = "http://i.wxbug.net/REST/Direct/GetData.ashx?zip=" + "%s" +
@@ -227,6 +227,7 @@ public class ForecastLocation implements Parcelable
                     _instance.State = iterator.next();
                     
                     _listener.onLocationLoaded(_instance);
+                    isLoaded = true;
                 }
         }
 }
