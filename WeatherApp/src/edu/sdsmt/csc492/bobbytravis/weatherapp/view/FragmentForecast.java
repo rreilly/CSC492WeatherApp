@@ -52,6 +52,11 @@ public class FragmentForecast extends Fragment implements IListeners
                 {
                 	_forecast = savedInstanceState.getParcelable(FORECAST_KEY);
                 	_location = savedInstanceState.getParcelable(LOCATION_KEY);
+                	if(_location == null)
+                		_location.getForecastLocation(this);
+                	if(_forecast == null)
+                		_forecast.getForecast(this);
+                	
                 }
         }
 
