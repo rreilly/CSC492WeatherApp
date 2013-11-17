@@ -88,9 +88,8 @@ public class MainActivity extends Activity
                         _fragmentManager.beginTransaction()
                          .replace(R.id.fragmentContainerFrame, _fragmentForecast, FRAGMENT_FORECAST_TAG)
                          .commit();
-                }
-        		_forecastLocation.getForecastLocation(_fragmentForecast);
-        		_forecast.getForecast(_fragmentForecast);
-                
+                        _forecastLocation.getForecastLocation(_fragmentForecast);
+                		_forecast.getForecast(_fragmentForecast);
+                }                
         }
 }

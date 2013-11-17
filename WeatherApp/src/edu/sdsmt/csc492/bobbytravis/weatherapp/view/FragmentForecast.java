@@ -84,19 +84,66 @@ public class FragmentForecast extends Fragment implements IListeners
                 _textViewProgressBar = (TextView) rootView.findViewById(R.id.textViewProgressBar);
                 _imageView = (ImageView) rootView.findViewById(R.id.imageForecast);
                 
-                // Hide the display initially
-                _textViewLocation.setVisibility(4);
-                _textViewTemp.setVisibility(4);
-                _textViewFeelsLikeTemp.setVisibility(4);
-                _textViewHumidity.setVisibility(4);
-                _textViewChanceOfPrecip.setVisibility(4);
-                _textViewAsOfTime.setVisibility(4);
+                // Hide the display initially IF forecast or location is null
+                if( _forecast == null || _location == null) 
+                {
+	                _textViewLocation.setVisibility(4);
+	                _textViewTemp.setVisibility(4);
+	                _textViewFeelsLikeTemp.setVisibility(4);
+	                _textViewHumidity.setVisibility(4);
+	                _textViewChanceOfPrecip.setVisibility(4);
+	                _textViewAsOfTime.setVisibility(4);
+	                
+	                _textViewTempLabel.setVisibility(4);
+	                _textViewFeelsLikeTempLabel.setVisibility(4);
+	                _textViewHumidityLabel.setVisibility(4);
+	                _textViewChanceOfPrecipLabel.setVisibility(4);
+	                _textViewAsOfTimeLabel.setVisibility(4);
+                }
                 
-                _textViewTempLabel.setVisibility(4);
-                _textViewFeelsLikeTempLabel.setVisibility(4);
-                _textViewHumidityLabel.setVisibility(4);
-                _textViewChanceOfPrecipLabel.setVisibility(4);
-                _textViewAsOfTimeLabel.setVisibility(4);
+                // Show location if you have it
+                if ( _location != null)
+                {
+                	_textViewLocation.setText(_location.getCity() + " " + _location.getState());
+                	_textViewLocation.setVisibility(0);
+                }
+                
+                // Show forecast if you have it
+                if ( _forecast != null)
+                {
+                	if(_forecast.getImage() == null)
+                	{
+                		Toast.makeText(getActivity(), "Unable to load icon", Toast.LENGTH_SHORT).show();
+                	}
+                	else // Display icon bitmap
+                	{
+                		_imageView.setImageBitmap(_forecast.getImage());
+                	}
+                	
+                    // Fill the text fields
+                	_textViewTemp.setText(_forecast.Temp + "F");
+                    _textViewFeelsLikeTemp.setText(_forecast.FeelsLikeTemp + "F");
+                    _textViewHumidity.setText(_forecast.Humidity + "%");
+                    _textViewChanceOfPrecip.setText(_forecast.ChanceOfPrecip + "%");
+                    _textViewAsOfTime.setText(formatDateTime(_forecast.AsOfTime));
+                    
+                	// Hide the progress bar
+                	_progressBar.setVisibility(4);
+                	_textViewProgressBar.setVisibility(4);
+                	
+                	// Show the other stuff
+                    _textViewTemp.setVisibility(0);
+                    _textViewFeelsLikeTemp.setVisibility(0);
+                    _textViewHumidity.setVisibility(0);
+                    _textViewChanceOfPrecip.setVisibility(0);
+                    _textViewAsOfTime.setVisibility(0);
+                    
+                    _textViewTempLabel.setVisibility(0);
+                    _textViewFeelsLikeTempLabel.setVisibility(0);
+                    _textViewHumidityLabel.setVisibility(0);
+                    _textViewChanceOfPrecipLabel.setVisibility(0);
+                    _textViewAsOfTimeLabel.setVisibility(0);
+                }
                 
                 return rootView;
         }
