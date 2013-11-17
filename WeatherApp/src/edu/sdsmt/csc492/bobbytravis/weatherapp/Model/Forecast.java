@@ -35,7 +35,6 @@ public class Forecast implements Parcelable
 
         private static final String TAG = "";
         
-        public static Boolean isLoaded = false;
         // http://developer.weatherbug.com/docs/read/WeatherBug_API_JSON
         // NOTE: See example JSON in doc folder.
         private static String _URL = "http://i.wxbug.net/REST/Direct/GetForecastHourly.ashx?zip=" + "%s" +
@@ -264,7 +263,6 @@ public class Forecast implements Parcelable
                     _instance.AsOfTime = iterator.next();
                     
                     _listener.onForecastLoaded(_instance);
-            		isLoaded = true;
                 }
 
                 private Bitmap readIconBitmap(String conditionString, int bitmapSampleSize)

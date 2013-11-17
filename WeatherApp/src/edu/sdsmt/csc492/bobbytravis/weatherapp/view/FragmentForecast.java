@@ -52,11 +52,6 @@ public class FragmentForecast extends Fragment implements IListeners
                 {
                 	_forecast = savedInstanceState.getParcelable(FORECAST_KEY);
                 	_location = savedInstanceState.getParcelable(LOCATION_KEY);
-                	if(!_location.isLoaded)
-                		_location.getForecastLocation(this);
-                	if(!_forecast.isLoaded)
-                		_forecast.getForecast(this);
-                	
                 }
         }
 
@@ -177,7 +172,7 @@ public class FragmentForecast extends Fragment implements IListeners
         		Toast.makeText(getActivity(), "Unable to retrieve location", Toast.LENGTH_SHORT).show();
         		return;        		
         	}
-
+                                               
         	_textViewLocation.setText(forecastLocation.getCity() + " " + forecastLocation.getState());
         	
         	_textViewLocation.setVisibility(0);
