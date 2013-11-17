@@ -28,6 +28,7 @@ import android.util.JsonToken;
 import android.util.Log;
 import android.widget.Toast;
 import edu.sdsmt.csc492.bobbytravis.weatherapp.IListeners;
+import edu.sdsmt.csc492.bobbytravis.weatherapp.MainActivity;
 
 public class Forecast implements Parcelable
 {
@@ -209,38 +210,40 @@ public class Forecast implements Parcelable
                         catch (IllegalStateException e)
                         {
                                 Log.e(TAG, e.toString() + params[0]);
-                				Toast toast = Toast.makeText(_context, "Unable to contact network", Toast.LENGTH_LONG);
-                				toast.show();
+                				return null;
                         }
                         catch (Exception e)
                         {
                                 Log.e(TAG, e.toString());
-                				Toast toast = Toast.makeText(_context, "Unable to contact network", Toast.LENGTH_LONG);
-                				toast.show();
+                				return null;
                         }
-                       
-                        Log.e("Error", "Returning null");
+
                         return null;
                 }
 
                 protected void onPostExecute(List<String> result)
-                {
+                {	
+                	if( result == null )
+                	{
+                		_listener.onForecastLoaded(null);
+                		return;
+                	}
                 	Iterator<String> iterator;
                 	
                     //load values to forecast variables 
-                	iterator = result.listIterator(result.indexOf("temperature"));
+                	iterator = result.listIterator(result.indexOf("temperature")+1);
                     _instance.Temp = iterator.next();
                         	            
-                    iterator = result.listIterator(result.indexOf("feelsLike"));
+                    iterator = result.listIterator(result.indexOf("feelsLike")+1);
                     _instance.FeelsLikeTemp = iterator.next();
                         	            
-                    iterator = result.listIterator(result.indexOf("humidity"));
+                    iterator = result.listIterator(result.indexOf("humidity")+1);
                     _instance.Humidity = iterator.next();
                         	            
-                    iterator = result.listIterator(result.indexOf("chancePrecip"));
+                    iterator = result.listIterator(result.indexOf("chancePrecip")+1);
                     _instance.ChanceOfPrecip = iterator.next();
                         	            
-                    iterator = result.listIterator(result.indexOf("dateTime"));
+                    iterator = result.listIterator(result.indexOf("dateTime")+1);
                     _instance.AsOfTime = iterator.next();
                     
                     _listener.onForecastLoaded(_instance);
