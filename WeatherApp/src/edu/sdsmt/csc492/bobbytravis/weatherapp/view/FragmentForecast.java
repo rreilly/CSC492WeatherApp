@@ -18,13 +18,19 @@ public class FragmentForecast extends Fragment implements IListeners
         public static final String LOCATION_KEY = "key_location";
         public static final String FORECAST_KEY = "key_forecast";
         
+        private TextView _textViewLocation;
+        private TextView _textViewTempLabel;
         private TextView _textViewTemp;
+        private TextView _textViewFeelsLikeTempLabel;
         private TextView _textViewFeelsLikeTemp;
+        private TextView _textViewHumidityLabel;
         private TextView _textViewHumidity;
+        private TextView _textViewChanceOfPrecipLabel;
         private TextView _textViewChanceOfPrecip;
+        private TextView _textViewAsOfTimeLabel;
         private TextView _textViewAsOfTime;
         private ProgressBar _progressBar;
-        private TextView _progressBarTextView;
+        private TextView _textViewProgressBar;
         
         @Override
         public void onCreate(Bundle argumentsBundle)
@@ -45,20 +51,33 @@ public class FragmentForecast extends Fragment implements IListeners
                 View rootView = inflater.inflate(R.layout.fragment_forecast, null);
                 
                 // Assign instances of Views from the Layout Resource.
+                _textViewLocation = (TextView) rootView.findViewById(R.id.textViewLocation);
+                _textViewTempLabel = (TextView) rootView.findViewById(R.id.labelTemp);
                 _textViewTemp = (TextView) rootView.findViewById(R.id.textViewTemp);
+                _textViewFeelsLikeTempLabel = (TextView) rootView.findViewById(R.id.labelFeelsLikeTemp);
                 _textViewFeelsLikeTemp = (TextView) rootView.findViewById(R.id.textViewFeelsLikeTemp);
+                _textViewHumidityLabel = (TextView) rootView.findViewById(R.id.labelHumidity);
                 _textViewHumidity = (TextView) rootView.findViewById(R.id.textViewHumidity);
+                _textViewChanceOfPrecipLabel = (TextView) rootView.findViewById(R.id.labelChanceOfPrecip);
                 _textViewChanceOfPrecip = (TextView) rootView.findViewById(R.id.textViewChanceOfPrecip);
+                _textViewAsOfTimeLabel = (TextView) rootView.findViewById(R.id.labelAsOfTime);
                 _textViewAsOfTime = (TextView) rootView.findViewById(R.id.textViewAsOfTime);
                 _progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
-                _progressBarTextView = (TextView) rootView.findViewById(R.id.textViewProgressBar);
+                _textViewProgressBar = (TextView) rootView.findViewById(R.id.textViewProgressBar);
                 
                 // Hide the display initially
+                _textViewLocation.setVisibility(4);
                 _textViewTemp.setVisibility(4);
                 _textViewFeelsLikeTemp.setVisibility(4);
                 _textViewHumidity.setVisibility(4);
                 _textViewChanceOfPrecip.setVisibility(4);
                 _textViewAsOfTime.setVisibility(4);
+                
+                _textViewTempLabel.setVisibility(4);
+                _textViewFeelsLikeTempLabel.setVisibility(4);
+                _textViewHumidityLabel.setVisibility(4);
+                _textViewChanceOfPrecipLabel.setVisibility(4);
+                _textViewAsOfTimeLabel.setVisibility(4);
                 
                 // set values
                 /*_textViewTemp.setText(savedInstanceState.getString("Temp"));
@@ -85,7 +104,15 @@ public class FragmentForecast extends Fragment implements IListeners
         
         public void onLocationLoaded(ForecastLocation forecastLocation)
         {
+        	if(forecastLocation == null)
+        	{
+        		Toast.makeText(getActivity(), "Unable to contact server", Toast.LENGTH_SHORT).show();
+        		return;        		
+        	}
         	
+        	_textViewLocation.setText(forecastLocation.City + " " + forecastLocation.State);
+        	
+        	_textViewLocation.setVisibility(0);
         }
         
         public void onForecastLoaded(Forecast forecast)
@@ -95,18 +122,30 @@ public class FragmentForecast extends Fragment implements IListeners
         		Toast.makeText(getActivity(), "Unable to contact server", Toast.LENGTH_SHORT).show();
         		return; 
         	}
-        	_progressBar.setVisibility(4);
-        	_progressBarTextView.setVisibility(4);
-            _textViewTemp.setVisibility(0);
-            _textViewFeelsLikeTemp.setVisibility(0);
-            _textViewHumidity.setVisibility(0);
-            _textViewChanceOfPrecip.setVisibility(0);
-            _textViewAsOfTime.setVisibility(0);
+        	
+            // Fill the text fields
         	_textViewTemp.setText(forecast.Temp);
             _textViewFeelsLikeTemp.setText(forecast.FeelsLikeTemp);
             _textViewHumidity.setText(forecast.Humidity);
             _textViewChanceOfPrecip.setText(forecast.ChanceOfPrecip);
             _textViewAsOfTime.setText(forecast.AsOfTime);
             
+        	// Hide the progress bar
+        	_progressBar.setVisibility(4);
+        	_textViewProgressBar.setVisibility(4);
+        	
+        	// Show the other stuff
+            _textViewTemp.setVisibility(0);
+            _textViewFeelsLikeTemp.setVisibility(0);
+            _textViewHumidity.setVisibility(0);
+            _textViewChanceOfPrecip.setVisibility(0);
+            _textViewAsOfTime.setVisibility(0);
+            
+            _textViewTempLabel.setVisibility(0);
+            _textViewFeelsLikeTempLabel.setVisibility(0);
+            _textViewHumidityLabel.setVisibility(0);
+            _textViewChanceOfPrecipLabel.setVisibility(0);
+            _textViewAsOfTimeLabel.setVisibility(0);
+                       
         }
 }

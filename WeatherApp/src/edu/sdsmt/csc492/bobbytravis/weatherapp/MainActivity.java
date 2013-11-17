@@ -11,10 +11,10 @@ public class MainActivity extends Activity
 {
 		private final static String FRAGMENT_FORECAST_TAG = "ForecastTag";
 	
-        private String[] _citiesArray;
         private FragmentManager _fragmentManager;
         private FragmentForecast _fragmentForecast;
         private Forecast _forecast;
+        private ForecastLocation _forecastLocation;
 
         @Override
         protected void onCreate(Bundle savedInstanceState)
@@ -23,8 +23,6 @@ public class MainActivity extends Activity
                 setContentView(R.layout.activity_main);
                 
                 // Get City array from resources.
-                _citiesArray = getResources().getStringArray(R.array.cityArray);
-                
                 // Get a reference to the fragment manager to
                 // be used for adding/replacing fragments.
                 _fragmentManager = getFragmentManager();
@@ -49,6 +47,7 @@ public class MainActivity extends Activity
                 }*/
 
                 _forecast = Forecast.getInstance();
+                _forecastLocation = ForecastLocation.getInstance();
                 
                 // By default, first element is "favorite" city, go get location.
                 // TextUtils.split() takes a regular expression and in the case
@@ -90,6 +89,7 @@ public class MainActivity extends Activity
                          .replace(R.id.fragmentContainerFrame, _fragmentForecast, FRAGMENT_FORECAST_TAG)
                          .commit();
                 }
+        		_forecastLocation.getForecastLocation(_fragmentForecast);
         		_forecast.getForecast(_fragmentForecast);
                 
         }

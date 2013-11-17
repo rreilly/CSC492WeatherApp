@@ -39,7 +39,7 @@ public class Forecast implements Parcelable
         // NOTE: See example JSON in doc folder.
         private static String _URL = "http://i.wxbug.net/REST/Direct/GetForecastHourly.ashx?zip=" + "%s" +
          "&ht=t&ht=i&ht=cp&ht=fl&ht=h" +
-         "&api_key=q3wj56tqghv7ybd8dy6gg4e7";
+         "&api_key=ud28nxu36cn6hxg84xgc6t6d";
         
         private static final String zipCode = "57701";
         
@@ -112,7 +112,6 @@ public class Forecast implements Parcelable
         public static class LoadForecast extends AsyncTask<String, Void, List<String>>
         {
                 private static IListeners _listener;
-                private Context _context;
 
                 private int bitmapSampleSize = -1;
 
@@ -134,7 +133,6 @@ public class Forecast implements Parcelable
                                 // InputStreamReader
                                 // JsonReader
                         		
-                        		StringBuilder stringBuilder = new StringBuilder();
                         		HttpClient client = new DefaultHttpClient();
                         		JsonToken type = null;
                         		
@@ -143,7 +141,6 @@ public class Forecast implements Parcelable
                         		{
                         			HttpEntity entity = response.getEntity();
                         			InputStream content = entity.getContent();
-                        			BufferedReader reader = new BufferedReader(new InputStreamReader(content));
                         			
                         			try
                         			{
@@ -180,6 +177,10 @@ public class Forecast implements Parcelable
                         	            	case NULL:
                         	            		jreader.skipValue();
                         	            		break;
+                        	            	case END_DOCUMENT:
+                        	            		break;
+											default:
+												break;
                         	            	}
                         	            }
                         	            jreader.endObject();
