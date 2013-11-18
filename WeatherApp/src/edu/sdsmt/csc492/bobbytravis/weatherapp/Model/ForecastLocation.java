@@ -1,6 +1,5 @@
 package edu.sdsmt.csc492.bobbytravis.weatherapp.Model;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -22,7 +21,11 @@ import android.util.JsonToken;
 import android.util.Log;
 import edu.sdsmt.csc492.bobbytravis.weatherapp.IListeners;
 
-
+/**
+ * ForecastLocation object to retrieve the location the forecast is for.
+ * @author Travis Larson
+ *
+ */
 public class ForecastLocation implements Parcelable
 {
 
@@ -31,8 +34,8 @@ public class ForecastLocation implements Parcelable
         private static ForecastLocation _instance;
         
         private static final String ZipCode = "57701";
-        public static String City;
-        public static String State;
+        public String City;
+        public String State;
         // http://developer.weatherbug.com/docs/read/WeatherBug_API_JSON
         // NOTE: See example JSON in doc folder.
         private static final String _URL = "http://i.wxbug.net/REST/Direct/GetData.ashx?zip=" + "%s" +
@@ -75,6 +78,10 @@ public class ForecastLocation implements Parcelable
 			dest.writeString(State);
 		}
 		
+		/**
+         * CREATOR field to let us implement the class as parcelable
+         * @author Travis Larson
+         */
 		public static final Parcelable.Creator<ForecastLocation> CREATOR = new Parcelable.Creator<ForecastLocation>()
 		{
 			public ForecastLocation createFromParcel(Parcel pc)
@@ -88,6 +95,11 @@ public class ForecastLocation implements Parcelable
 			}
 		};
         
+		/**
+         * Setup function to call the async task.
+         * @author Travis Larson
+         * @param viewFragment Fragment that the result will return to.
+         */
         public void getForecastLocation(Fragment viewFragment)
         {
         	new LoadForecastLocation( this, (IListeners) viewFragment).execute(ZipCode);
@@ -103,30 +115,35 @@ public class ForecastLocation implements Parcelable
         	return State;
         }
         
+        /**
+         * Class extending AsyncTask to prevent locking the UI thread while
+         * waiting for data retrieval.
+         * @author Travis Larson
+         * 
+         */
         public static class LoadForecastLocation extends AsyncTask<String, Void, List<String>>
         {
                 private static IListeners _listener;
 
-                private int bitmapSampleSize = -1;
-
+                /**
+                 * Set the listener so callback can be made.
+                 * @author Travis Larson
+                 * @param listener Fragment implementing the IListeners interface
+                 */
                 public LoadForecastLocation(ForecastLocation forecastLocation, IListeners listener)
                 {
-                        //_context = forecast;
                         _listener = listener;
                 }
 
+                /**
+                 * Async task that occurs on a seperate string to prevent the
+                 * app from hanging. Retrieves and parses the json object.
+                 * @author Travis Larson
+                 */
                 protected List<String> doInBackground(String... params)
                 {
-                        //Forecast forecast = null;
-                        //char quote = '"';
-
                         try
-                        {
-                                // HINT: You will use the following classes to make API call.
-                                //                 URL
-                                // InputStreamReader
-                                // JsonReader
-                        		
+                        {                        		
                         		HttpClient client = new DefaultHttpClient();
                         		JsonToken type = null;
                         		HttpResponse response = client.execute(new HttpGet(String.format(_URL, params[0])));
@@ -179,20 +196,7 @@ public class ForecastLocation implements Parcelable
                         			{
 
                         			}
-                        			
-                        			//old style, need to see if JsonReader will work better
-                        			/*String line;
-                        			while((line = reader.readLine()) != null)
-                        			{
-                        				stringBuilder.append(line);
-                        			}
-                        			// Need to implement this method
-                        			JSONTokener tokener = new JSONTokener(stringBuilder.toString());
-                        			line = tokener.nextString(quote);
-                        			
-                        			int a = 1;*/
                         		}
-                        		
                         }
                         catch (IllegalStateException e)
                         {
@@ -208,6 +212,11 @@ public class ForecastLocation implements Parcelable
                         return null;
                 }
 
+                /**
+                 * Called after doInBackground, assigns instance variables and
+                 * triggers listener.
+                 * @author Travis Larson
+                 */
                 protected void onPostExecute(List<String> result)
                 {	
                 	if( result == null )
