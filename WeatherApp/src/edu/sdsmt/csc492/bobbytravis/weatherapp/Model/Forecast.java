@@ -1,6 +1,5 @@
 package edu.sdsmt.csc492.bobbytravis.weatherapp.Model;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,7 +16,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -26,10 +24,13 @@ import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
-import android.widget.Toast;
 import edu.sdsmt.csc492.bobbytravis.weatherapp.IListeners;
-import edu.sdsmt.csc492.bobbytravis.weatherapp.MainActivity;
 
+/**
+ * Forecast object to retrieve the forecast data
+ * @author Bobby Reilly and Travis Larson
+ *
+ */
 public class Forecast implements Parcelable
 {
 
@@ -63,7 +64,11 @@ public class Forecast implements Parcelable
                 _instance = this;
         }
         
-        public static final Parcelable.Creator<Forecast> Creator = new Parcelable.Creator<Forecast>()
+        /**
+         * CREATOR field to let us implement the class as parcelable
+         * @author Travis Larson
+         */
+        public static final Parcelable.Creator<Forecast> CREATOR = new Parcelable.Creator<Forecast>()
         {
                 @Override
                 public Forecast createFromParcel(Parcel pc)
@@ -122,35 +127,45 @@ public class Forecast implements Parcelable
                 dest.writeString(Icon);
         }
         
-        
-        
+        /**
+         * Setup function to call the async task.
+         * @author Bobby Reilly
+         * @param viewFragment Fragment that the result will return to.
+         */
         public void getForecast(Fragment viewFragment)
         {
-        	new LoadForecast( this, (IListeners) viewFragment).execute(zipCode);
+        	new LoadForecast( (IListeners) viewFragment).execute(zipCode);
         }
 
+        /**
+         * Class extending AsyncTask to prevent locking the UI thread while
+         * waiting for data retrieval.
+         * @author Bobby Reilly and Travis Larson
+         * 
+         */
         public static class LoadForecast extends AsyncTask<String, Void, List<String>>
         {
                 private static IListeners _listener;
 
-                public LoadForecast(Forecast forecast, IListeners listener)
+                /**
+                 * Set the listener so callback can be made.
+                 * @author Bobby Reilly
+                 * @param listener Fragment implementing the IListeners interface
+                 */
+                public LoadForecast( IListeners listener)
                 {
-                        //_context = forecast;
                         _listener = listener;
                 }
 
+                /**
+                 * Async task that occurs on a seperate string to prevent the
+                 * app from hanging. Retrieves and parses the json object.
+                 * @author Bobby Reilly and Travis Larson
+                 */
                 protected List<String> doInBackground(String... params)
                 {
-                        //Forecast forecast = null;
-                        //char quote = '"';
-
                         try
                         {
-                                // HINT: You will use the following classes to make API call.
-                                //                 URL
-                                // InputStreamReader
-                                // JsonReader
-                        		
                         		HttpClient client = new DefaultHttpClient();
                         		JsonToken type = null;
                         		
@@ -207,21 +222,7 @@ public class Forecast implements Parcelable
                         			{
 
                         			}
-                        			
-                        			//old style, need to see if JsonReader will work better
-                        			/*String line;
-                        			while((line = reader.readLine()) != null)
-                        			{
-                        				stringBuilder.append(line);
-                        			}
-                        			// Need to implement this method
-                        			//forecastLocation = readJSON(stringBuilder.toString());
-                        			JSONTokener tokener = new JSONTokener(stringBuilder.toString());
-                        			line = tokener.nextString(quote);
-                        			
-                        			int a = 1;*/
                         		}
-                        		
                         }
                         catch (IllegalStateException e)
                         {
@@ -237,6 +238,11 @@ public class Forecast implements Parcelable
                         return null;
                 }
 
+                /**
+                 * Called after doInBackground, assigns instance variables and
+                 * triggers listener.
+                 * @author Bobby Reilly and Travis Larson
+                 */
                 protected void onPostExecute(List<String> result)
                 {	
                 	if( result == null )
@@ -265,6 +271,13 @@ public class Forecast implements Parcelable
                     _listener.onForecastLoaded(_instance);
                 }
 
+                /**
+                 * Code provided by Brian Butterfield to retrieve the weather icon
+                 * @author Brian Butterfield
+                 * @param conditionString Condition number based on forecast information
+                 * @param bitmapSampleSize Size to make the bitmap
+                 * @return
+                 */
                 private Bitmap readIconBitmap(String conditionString, int bitmapSampleSize)
                 {
                         Bitmap iconBitmap = null;

@@ -20,6 +20,12 @@ import edu.sdsmt.csc492.bobbytravis.weatherapp.IListeners;
 import edu.sdsmt.csc492.bobbytravis.weatherapp.Model.Forecast;
 import edu.sdsmt.csc492.bobbytravis.weatherapp.Model.ForecastLocation;
 
+/**
+ * View fragment for the app. Loads data from forecast and forecast location when
+ * callback occurs.
+ * @author Bobby Reilly, Travis Larson, and Andrew Thompson
+ * 
+ */
 public class FragmentForecast extends Fragment implements IListeners
 {
         public static final String LOCATION_KEY = "key_location";
@@ -43,6 +49,12 @@ public class FragmentForecast extends Fragment implements IListeners
         private TextView _textViewProgressBar;
         private ImageView _imageView;
         
+        /**
+         * Create the fragment, and check if the forecast and location were
+         * added previously.
+         * @author Travis Larson
+         * {@inheritDoc}
+         */
         @Override
         public void onCreate(Bundle savedInstanceState)
         {
@@ -55,6 +67,11 @@ public class FragmentForecast extends Fragment implements IListeners
                 }
         }
 
+        /**
+         * Save forecast and location for retrieval
+         * @author Travis Larson
+         * {@inheritDoc}
+         */
         @Override
         public void onSaveInstanceState(Bundle savedInstanceStateBundle)
         {
@@ -63,6 +80,12 @@ public class FragmentForecast extends Fragment implements IListeners
                 savedInstanceStateBundle.putParcelable(LOCATION_KEY, _location);
         }
 
+        /**
+         * Create the UI for the fragment and assign variables to UI fields.
+         * Set the fields if information is already recorded.
+         * @author Travis Larson and Bobby Reilly
+         * {@inheritDoc}
+         */
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
@@ -149,20 +172,10 @@ public class FragmentForecast extends Fragment implements IListeners
                 return rootView;
         }
 
-        @Override
-        public void onActivityCreated(Bundle savedInstanceStateBundle)
-        {
-                super.onActivityCreated(savedInstanceStateBundle);
-        }
-
-        @Override
-        public void onDestroy()
-        {
-                
-                super.onDestroy();
-                
-        }
-        
+        /**
+         * Callback to set the location text when it is retrieved
+         * @author Travis Larson
+         */
         @Override
         public void onLocationLoaded(ForecastLocation forecastLocation)
         {
@@ -178,6 +191,10 @@ public class FragmentForecast extends Fragment implements IListeners
         	_textViewLocation.setVisibility(0);
         }
         
+        /**
+         * Callback to set the forecast information when it is retrieved
+         * @author Travis Larson
+         */
         @Override
         public void onForecastLoaded(Forecast forecast)
         {
@@ -223,7 +240,12 @@ public class FragmentForecast extends Fragment implements IListeners
             
         }
         
-        // Function courtesy of Andrew Thompson, make sure to give credit when we document this up
+        /**
+         * Function given by Andrew Thompson to convert a timestamp to AM/PM format
+         * @author Andrew Thompson
+         * @param timestamp UNIX timestamp to be converted
+         * @return
+         */
 		public String formatDateTime(String timestamp)
 		{
 		    Date date = new Date(Long.valueOf(timestamp));   
